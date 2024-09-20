@@ -1,26 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import React from "react";
+import Labs from "./Labs/genlab"
+import Entry from "./Kanbas/Entry"
+import { HashRouter, Route, Routes, Navigate, Link} from "react-router-dom";
+import Profile from "./Kanbas/Account/Profile";
+import Signup from "./Kanbas/Account/Signup";
+import LandingPage from "./LandingPage/LandingPage";
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <HashRouter>
+      
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/Labs/*" element={<Labs />} />
+          <Route path="/Kanbas/*" element={<Entry />} />
+        </Routes>
+      
+      </HashRouter>
     </div>
   );
 }
-
-export default App;
