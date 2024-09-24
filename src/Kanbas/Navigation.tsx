@@ -13,6 +13,7 @@ export default function Navigation() {
         <Link to="/Kanbas/Calendar"> Calendar</Link> <br/>
         <Link to="/Kanbas/Inbox"> Inbox</Link> <br/>
         <Link to="/Labs"> Labs</Link> <br/>
+        <Link to ="/LandingPage"> Back To App</Link>
         </div>
     );
 

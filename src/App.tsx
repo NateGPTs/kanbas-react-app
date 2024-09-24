@@ -14,6 +14,7 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/Labs/*" element={<Labs />} />
           <Route path="/Kanbas/*" element={<Entry />} />
+          <Route path="/LandingPage/*" element={<LandingPage />} />
         </Routes>
       
       </HashRouter>

@@ -11,6 +11,7 @@ export default function LandingPage() {
             <ul>
                 <li><Link to="/Kanbas/*">Kanbas</Link></li>
                 <li><Link to="/Labs/*">Labs</Link></li>
+                <a href="https://github.com/NateGPTs/kanbas-react.git"> Repository</a>
             </ul>
         </div>
     );
