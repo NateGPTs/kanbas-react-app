@@ -6,7 +6,8 @@ export default function LandingPage() {
     return (
         <div>
             <h1>Nathanael Soesetio</h1>
-            <h2>17229</h2>
+            <h2>Section 2</h2>
+            <h3>17229</h3>
             <hr/>
             <ul>
                 <li><Link to="/Kanbas/*">Kanbas</Link></li>
