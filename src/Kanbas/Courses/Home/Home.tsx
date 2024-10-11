@@ -5,20 +5,17 @@ export function Home() {
 
     return (
 
-        <div>
-            <table>
-                <tr>
-                    <td valign="top">
-                        <Modules />
+        <div className="d-flex">
+            <div className="flex-fill" id="wd-home">
+                    <Modules />
+            </div>
 
-                    </td>
                     
-                    <td valign="top" >
-                        <CourseStatus />
-                    </td>
-                </tr>
+                    
+                <div className="d-none d-md-block element-container-right ms-4">
+                    <CourseStatus />
+                </div>
 
-            </table>
 
         </div>
 

@@ -13,6 +13,7 @@ export default function LandingPage() {
                 <li><Link to="/Kanbas/*">Kanbas</Link></li>
                 <li><Link to="/Labs/*">Labs</Link></li>
                 <li><a href="https://github.com/NateGPTs/kanbas-react-app"> Repository</a></li>
+                <li><a href="https://github.com/NateGPTs/kanbas-react-app/tree/A2"> Repository, Branch A2</a></li>
             </ul>
         </div>
     );
