@@ -1,15 +1,27 @@
+import { useParams } from "react-router";
+import assignments from "../../Database/gistfile1.json"; 
+
 export default function AssignmentEditor() {
+
+    const { assignmentId } = useParams();
+    const key = assignments.find(assignment =>
+    assignment._id === assignmentId);    
+
     return (
+      
+      
       <div id="wd-assignments-editor" className="p-4">
   <div className="mb-3">
-    <label htmlFor="wd-name" className="form-label"><strong>Assignment Name</strong></label>
-    <input id="wd-name" className="form-control" value="A1 - ENV + HTML" />
+    <label htmlFor="wd-name" className="form-label">
+      <strong>Title</strong>
+      </label>
+    <input id="wd-name" className="form-control" value={key?.title} />
   </div>
 
   <div className="mb-3">
     <label htmlFor="wd-description" className="form-label"><strong>Description</strong></label>
     <textarea id="wd-description" className="form-control">
-      The assignment is available online. Submit a link to the landing page of
+    {key?.Description}
     </textarea>
   </div>
 
@@ -18,7 +30,7 @@ export default function AssignmentEditor() {
       <label htmlFor="wd-points" className="form-label">Points</label>
     </div>
     <div className="col-md-8">
-      <input id="wd-points" className="form-control" value={100} />
+      <input id="wd-points" className="form-control" value={key?.pts} />
     </div>
   </div>
 

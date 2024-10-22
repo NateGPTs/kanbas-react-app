@@ -1,28 +1,29 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink, useLocation, useParams } from "react-router-dom";
 import "./courses.css";
+import { courses } from "../Database/database";
 
 export default function Coursenav() {
-    
+    const links = ["Home", "Modules", "Piazza", "Zoom", "Assignments", "Quizzes", "Grades", "People"];
+    const currentLocation = useLocation();
+    const pathSegments = currentLocation.pathname.split('/');
+    const id = pathSegments[3];
+
     return (
         <div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
             
-            <Link id="wd-course-home-link"    to="/Kanbas/Courses/1234/Home"
-            className="list-group-item active border border-0">Home</Link>
-            <Link id="wd-course-modules-link" 
-            className="list-group-item active border border-0" to="/Kanbas/Courses/1234/Modules">Modules</Link>
-            <Link id="wd-course-piazza-link"  
-            className="list-group-item active border border-0" to="/Kanbas/Courses/1234/Piazza">Piazza</Link>
-            <Link id="wd-course-zoom-link"    
-            className="list-group-item active border border-0" to="/Kanbas/Courses/1234/Zoom">Zoom</Link>
-            <Link id="wd-course-quizzes-link" 
-            className="list-group-item active border border-0" to="/Kanbas/Courses/1234/Assignments"> Assignments</Link>
-            <Link id="wd-course-assignments-link" 
-            className="list-group-item active border border-0" to="/Kanbas/Courses/1234/Quizzes">Quizzes </Link>
-            <Link id="wd-course-assignments-link" 
-            className="list-group-item active border border-0" to="/Kanbas/Courses/1234/Grades">Grades </Link>
-            <Link id="wd-course-assignments-link" 
-            className="list-group-item active border border-0" to="/Kanbas/Courses/1234/People">People </Link>
-            
+            { links.map((link) => (
+
+                <NavLink 
+                    key={link}
+                    id="wd-course-home-link"
+                    to={`/Kanbas/Courses/${id}/${link}`}
+                    className={({ isActive }) => 
+                        isActive ? 'list-group-item active border border-0' : 'list-group-item border border-0'
+                    }
+                >
+                    {link}
+                </NavLink>))
+            }
         </div>
 
     );
