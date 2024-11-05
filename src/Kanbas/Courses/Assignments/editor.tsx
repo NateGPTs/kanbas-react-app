@@ -1,11 +1,95 @@
-import { useParams } from "react-router";
-import assignments from "../../Database/gistfile1.json"; 
+import { useNavigate, useParams } from "react-router";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-export default function AssignmentEditor() {
 
-    const { assignmentId } = useParams();
-    const key = assignments.find(assignment =>
-    assignment._id === assignmentId);    
+
+export default function AssignmentEditor({ updateAssignment }: 
+  { updateAssignment: (assignmentId: any) => void}) {
+  
+
+  
+  const { assignments } = useSelector((state: any) => state.assignmentReducer);
+  const { cid } = useParams();  
+  const { assignmentId } = useParams();
+  const navigate = useNavigate();
+  const assignment = assignments.find((a: { _id: string | undefined; }) => a._id === assignmentId);
+  
+
+  const getRandomInt = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+  
+  const generateUniqueRandomInt = (assignments: { _id: string; }[], min: number, max: number) => {
+    let newId: number;
+    
+    // Create a set of existing IDs for faster lookup
+    const existingIds = new Set(assignments.map(assignment => parseInt(assignment._id)));
+  
+    do {
+      // Generate a new random integer
+      newId = getRandomInt(min, max);
+    } while (existingIds.has(newId)); // Check for uniqueness
+    
+    return newId; // Return the unique random integer
+  };
+
+  const id = generateUniqueRandomInt(assignments, 1000, 0);
+
+  
+  const [editData, setEditData] = useState(() => {
+    if (assignment) {
+      return {
+        "_id": assignment._id,
+        "title": assignment.title,
+        "course": assignment.course,
+        "OutAt": assignment.OutAt,
+        "Due": assignment.Due,
+        "pts": assignment.pts,
+        "Description": assignment.Description,
+      };
+    }
+    return {
+      "_id": id,
+      "title": '',
+      "course": cid,
+      "OutAt": '',
+      "Due": '',
+      "pts": 0,
+      "Description": '',
+    }; // Default state if assignment is not found
+  });
+
+  useEffect(() => {
+    if (assignment) {
+      setEditData({
+        "_id": assignment._id,
+        "title": assignment.title,
+        "course": assignment.course,
+        "OutAt": assignment.OutAt,
+        "Due": assignment.Due,
+        "pts": assignment.pts,
+        "Description": assignment.Description,
+      });
+    }
+  }, [assignment]);
+
+  const handleInputChange = (field: string, value: string) => {
+    setEditData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
+  const handleSave = () => {
+    updateAssignment(editData);
+    navigate(`/Kanbas/Courses/${cid}/Assignments`);
+  };
+
+  const handleCancel = () => {
+    navigate(`/Kanbas/Courses/${cid}/Assignments`);
+  };
+
 
     return (
       
@@ -15,13 +99,15 @@ export default function AssignmentEditor() {
     <label htmlFor="wd-name" className="form-label">
       <strong>Title</strong>
       </label>
-    <input id="wd-name" className="form-control" value={key?.title} />
+    <input id="wd-name" className="form-control" value={editData?.title} 
+    onChange={(e) => handleInputChange("title", e.target.value)} />
   </div>
 
   <div className="mb-3">
     <label htmlFor="wd-description" className="form-label"><strong>Description</strong></label>
-    <textarea id="wd-description" className="form-control">
-    {key?.Description}
+    <textarea id="wd-description" className="form-control"
+    onChange={(e) => handleInputChange("Description", e.target.value)} >
+    {editData?.Description}
     </textarea>
   </div>
 
@@ -30,7 +116,8 @@ export default function AssignmentEditor() {
       <label htmlFor="wd-points" className="form-label">Points</label>
     </div>
     <div className="col-md-8">
-      <input id="wd-points" className="form-control" value={key?.pts} />
+      <input id="wd-points" className="form-control" value={editData?.pts} 
+      onChange={(e) => handleInputChange("pts", e.target.value)} />
     </div>
   </div>
 
@@ -109,7 +196,8 @@ export default function AssignmentEditor() {
       <label htmlFor="wd-due-date" className="form-label">Due</label>
     </div>
     <div className="col-md-8">
-      <input type="date" id="wd-due-date" className="form-control" value="05-13-2024" />
+      <input type="date" id="wd-due-date" className="form-control" value={ editData.Due } 
+      onChange={(e) => handleInputChange("Due", e.target.value)} />
     </div>
   </div>
 
@@ -118,14 +206,25 @@ export default function AssignmentEditor() {
       <label htmlFor="wd-available-from" className="form-label">Available from</label>
     </div>
     <div className="col-md-4">
-      <input type="date" id="wd-available-from" className="form-control" value="05-06-2024" />
+      <input type="date" id="wd-available-from" className="form-control" value={ editData.OutAt } 
+      onChange={(e) => handleInputChange("OutAt", e.target.value)} />
     </div>
 
     <div className="col-md-4">
       <label htmlFor="wd-until" className="form-label">Until</label>
-      <input type="date" id="wd-until" className="form-control" value="05-20-2024" />
+      <input type="date" id="wd-until" className="form-control" value={ editData.Due } 
+      onChange={(e) => handleInputChange("Due", e.target.value)} />
     </div>
   </div>
+
+  <div className="d-flex justify-content-between mt-4">
+        <button onClick={handleSave} className="btn btn-primary">
+          Save
+        </button>
+        <button onClick={handleCancel} className="btn btn-secondary">
+          Cancel
+        </button>
+      </div>
 </div>
 
   );}

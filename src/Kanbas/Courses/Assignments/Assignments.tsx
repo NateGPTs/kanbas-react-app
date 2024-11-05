@@ -5,17 +5,30 @@ import ModuleControlButtons from "../ModuleControlButtons";
 import AssignmentControls from "./AssignmentContros";
 import './Assignments.css'
 import GroupAndAssignments from "./GroupAndAssignments";
-import assignments from "../../Database/gistfile1.json"; 
 import { FaBook } from "react-icons/fa6";
 import { Route, Routes, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import AssignmentEditor from "./editor";
+import AssignmentButtons from "./AssignmentButtons";
+import { deleteAssignment } from "./reducer";
+import { useDispatch, useSelector } from "react-redux";
 
 
 
   export default function AssignmentsPage() {
     const { cid } = useParams();
+    const dispatch = useDispatch();
+    const { assignments } = useSelector((state: any) => state.assignmentReducer);
     
+    const handleDelete = (assignmentId: any) => {
+      // Show confirmation dialog
+      const confirmDelete = window.confirm('Are you sure you want to delete this assignment?');
+      if (confirmDelete) {
+        dispatch(deleteAssignment(assignmentId));
+      }
+    };
+
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     return (
 
@@ -26,9 +39,9 @@ import AssignmentEditor from "./editor";
     <div className="assignments-float-left">
       <AssignmentControls />
     </div>
-    <div className="assignments-float-right ms-auto">
+    { currentUser.role === "FACULTY" && (<div className="assignments-float-right ms-auto">
       <GroupAndAssignments />
-    </div>
+    </div>)}
     </div>
     <br/>
 
@@ -38,7 +51,7 @@ import AssignmentEditor from "./editor";
         <div className="wd-title p-3 ps-2 bg-secondary fw-bold">
           <BsGripVertical className="me-2 fs-2" />
           ASSIGNMENTS
-          < ModuleControlButtons />
+
           </div>
       </li>
 
@@ -60,7 +73,10 @@ import AssignmentEditor from "./editor";
               </div>
             </div>
             <div style={{ marginLeft: 'auto' }} className="mt-4">
-            <LessonControlButtons />
+            
+            <AssignmentButtons assignmentId={assignment._id} 
+          deleteAssignment={(assignmentId) => {handleDelete(assignmentId)}} />
+
             </div>
           </li>
             ))}

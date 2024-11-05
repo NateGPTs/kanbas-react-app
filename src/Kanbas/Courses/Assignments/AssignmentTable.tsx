@@ -19,7 +19,7 @@ export default function AssignmentTable() {
       <div className="wd-title p-3 ps-2 bg-secondary fw-bold">
         <BsGripVertical className="me-2 fs-2" />
         ASSIGNMENTS
-        < ModuleControlButtons />
+
         </div>
 
       <ul className="wd-lessons list-group rounded-0">
