@@ -8,27 +8,56 @@ import GroupAndAssignments from "./GroupAndAssignments";
 import { FaBook } from "react-icons/fa6";
 import { Route, Routes, useParams } from "react-router";
 import { Link } from "react-router-dom";
-import AssignmentEditor from "./editor";
 import AssignmentButtons from "./AssignmentButtons";
-import { deleteAssignment } from "./reducer";
+import { deleteAssignment, setAssignments } from "./reducer"; // Import setAssignments action
 import { useDispatch, useSelector } from "react-redux";
-
+import * as assignClient from "./client";
+import { useEffect, useState } from "react";
 
 
   export default function AssignmentsPage() {
-    const { cid } = useParams();
+    const { cid } = useParams<{ cid: string }>();
     const dispatch = useDispatch();
     const { assignments } = useSelector((state: any) => state.assignmentReducer);
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     
-    const handleDelete = (assignmentId: any) => {
-      // Show confirmation dialog
+    const fetchAssignments = async () => {
+      if (!cid) return; // Guard against undefined courseId
+      try {
+        const assignments = await assignClient.getAssignments(cid);
+        console.log('Fetched assignments:', assignments);
+        if (Array.isArray(assignments)) {
+          dispatch(setAssignments(assignments));
+        }
+      } catch (error) {
+        console.error("Error fetching assignments:", error);
+      }
+    };
+  
+    useEffect(() => {
+      if (cid) {  // Only fetch if we have a course ID
+        fetchAssignments();
+        
+        const interval = setInterval(() => {
+          fetchAssignments();
+        }, 5000);
+        
+        return () => clearInterval(interval);
+      }
+    }, [cid, currentUser])
+    
+    const handleDelete = async (assignmentId: string) => {
       const confirmDelete = window.confirm('Are you sure you want to delete this assignment?');
       if (confirmDelete) {
-        dispatch(deleteAssignment(assignmentId));
+        try {
+          await assignClient.deleteAssignment(assignmentId);
+          fetchAssignments();
+        } catch (error) {
+          console.error('Error deleting assignment:', error);
+        }
       }
     };
 
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     return (
 

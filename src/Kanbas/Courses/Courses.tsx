@@ -9,6 +9,7 @@ import AssignmentsPage from './Assignments/Assignments'
 import PeopleTable from './people/table';
 import reducer, { addAssignment, deleteAssignment, updateAssignment } from "./Assignments/reducer";
 import { useDispatch } from "react-redux";
+import * as assignClient from "./Assignments/client";
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
@@ -17,7 +18,30 @@ export default function Courses({ courses }: { courses: any[]; }) {
   const pathSegments = currentLocation.pathname.split('/');
   const dispatch = useDispatch();
 
-  
+  const handleUpdateAssignment = async (assignment: any) => {
+    try {
+      console.log("Updating assignment in Courses:", assignment); // Debug log
+      const updatedAssignment = await assignClient.updateAssignment(assignment);
+      console.log("Server response:", updatedAssignment); // Debug log
+      dispatch(updateAssignment(updatedAssignment));
+    } catch (error) {
+      console.error("Error updating assignment:", error);
+      alert("Failed to update assignment");
+    }
+};
+
+  const handleAddAssignment = async (assignment: any) => {
+    try {
+      // Create new assignment on server
+      const newAssignment = await assignClient.createAssignment(assignment);
+      // Update Redux state after successful API call
+      dispatch(addAssignment(newAssignment));
+    } catch (error) {
+      console.error("Error creating assignment:", error);
+      alert("Failed to create assignment");
+    }
+  };
+
   return (
     <div id="wd-courses">
         
@@ -48,10 +72,10 @@ export default function Courses({ courses }: { courses: any[]; }) {
               <Route path="/Grades" element={<Modules />} />
               <Route path="/People" element={<PeopleTable />} />
               <Route path="/Assignments/editor/:assignmentId" 
-              element={<AssignmentEditor updateAssignment={(assignment) => dispatch(updateAssignment(assignment))} />} />
+              element={<AssignmentEditor updateAssignment={(assignment) => handleUpdateAssignment(assignment)} />} />
 
               <Route path="/Assignments/editor/" 
-              element={<AssignmentEditor updateAssignment={(assignment) => dispatch(addAssignment(assignment))} />}/>
+              element={<AssignmentEditor updateAssignment={(assignment) => handleAddAssignment(assignment)} />}/>
           </Routes>
 
         </div>

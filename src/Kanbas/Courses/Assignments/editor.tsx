@@ -5,10 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 
 export default function AssignmentEditor({ updateAssignment }: 
-  { updateAssignment: (assignmentId: any) => void}) {
-  
-
-  
+  { updateAssignment: (assignment: any) => void}) {
   const { assignments } = useSelector((state: any) => state.assignmentReducer);
   const { cid } = useParams();  
   const { assignmentId } = useParams();
@@ -82,14 +79,17 @@ export default function AssignmentEditor({ updateAssignment }:
   };
 
   const handleSave = () => {
+    console.log("Saving assignment:", editData);  // Debug log
     updateAssignment(editData);
     navigate(`/Kanbas/Courses/${cid}/Assignments`);
-  };
+};
 
   const handleCancel = () => {
     navigate(`/Kanbas/Courses/${cid}/Assignments`);
   };
 
+
+  
 
     return (
       

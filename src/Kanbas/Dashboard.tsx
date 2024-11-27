@@ -1,22 +1,20 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import * as db from "./Database/database";
 import { enrollInCourse, unenrollFromCourse } from "./reducer";
+import { fetchAllCourses } from "./Courses/client";
  
 export default function Dashboard({ courses, course, setCourse, addNewCourse,
-  deleteCourse, updateCourse }: {
+  deleteCourse, updateCourse, fetchCourses }: {
   courses: any[]; course: any; setCourse: (course: any) => void;
   addNewCourse: () => void; deleteCourse: (course: any) => void;
-  updateCourse: () => void; }) { 
+  updateCourse: () => void; fetchCourses: () => Promise<void>;}) { 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollmentList } = useSelector((state: any) => state.enrollmentReducer);
   const dispatch = useDispatch();
   
 
   const [showEnrollments, setShowEnrollments] = useState(() => {
-    // Condition goes here
     return currentUser.role === "STUDENT" ? true : false;
   });
   
@@ -24,72 +22,39 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
     setShowEnrollments((prev) => !prev);
   };
 
-  const handleEnroll = (courseInfo: any) => {
-    dispatch(enrollInCourse(courseInfo));
-  };
 
-  const handleUnenroll = (courseInfo : any) => {
-    dispatch(unenrollFromCourse(courseInfo));
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchCourses();  // Use the prop function
+    }, 5000);
+  
+    return () => clearInterval(interval);
+  }, [fetchCourses])
 
-
-  const checkEnrollment = (courseId: String, userId: String) => {
-
-    return enrollmentList.some((enrolInfo : any) => (enrolInfo.course === courseId && enrolInfo.user === userId));
-
-  };
-
-  const enrollmentButton = (courseId : string, userId: string) => {
-    
-    if(checkEnrollment(courseId, userId)) {
-      return (
-      <button onClick={(event) => {
-        event.preventDefault();
-        const courseInfo = {
-
-          "user": userId,
-          "course": courseId
-
-        }
-        handleUnenroll(courseInfo)
-      }} className="btn btn-danger float-end"
-      id="wd-delete-course-click">
-      Unenroll
-    </button>
-      );
-    } else {
-      return (
-      <button onClick={(event) => {
-        event.preventDefault();
-        const courseInfo = {
-          "_id": "11",
-          "user": userId,
-          "course": courseId
-
-        }
-        handleEnroll(courseInfo)
-
-
-      }} className="btn btn-success float-end"
-      id="wd-delete-course-click">
-      Enroll
-    </button>
-      );
-    }
-  }
   
   const protectedRoute = (courseId : string, currentUser : any) => {
     
-    if( currentUser.role === "FACULTY" || (currentUser.role === "STUDENT") && checkEnrollment(courseId, currentUser._id)) {
+    if( currentUser.role === "FACULTY" || (currentUser.role === "STUDENT")) {
 
       return `/Kanbas/Courses/${courseId}/Home`
 
-    } else {
+    } else {  
 
       
     return `/Kanbas/Dashboard`
     }
   };
+
+  // Add debug logs
+  console.log("Dashboard - Current User:", currentUser);
+  console.log("Dashboard - Courses:", courses);
+  console.log("Dashboard - Is courses array?", Array.isArray(courses));
+  console.log("Dashboard - Courses length:", courses?.length);
+
+  // You can also add a check before mapping
+  if (!courses || courses.length === 0) {
+    console.log("No courses available to display");
+  }
 
     return (
             <div id="wd-dashboard">
@@ -129,13 +94,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                 <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
                 <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
-          {courses
-    .filter((course) => (showEnrollments ?
-      enrollmentList.some(
-        (enrollment : any) =>
-          enrollment.user === currentUser._id &&
-          enrollment.course === course._id
-         ) : true)).map((course) => (
+          {courses.map((course) => (
             <div className="wd-dashboard-course col" style={{ width: "300px" }}>
               <div className="card rounded-3 overflow-hidden">
                 <Link to={ protectedRoute(course._id, currentUser) }
@@ -165,7 +124,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                     Delete
                   </button>)}
 
-                  {currentUser.role === "STUDENT" && (enrollmentButton(course._id, currentUser._id))}
+                  {currentUser.role === "STUDENT"}
 
                   </div>
                 </Link>

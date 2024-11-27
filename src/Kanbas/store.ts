@@ -4,6 +4,7 @@ import accountReducer from "./Account/reducer";
 import assignmentReducer from "./Courses/Assignments/reducer";
 import enrollmentReducer from "./reducer";
 
+
 const store = configureStore({
   reducer: {
     modulesReducer,
@@ -13,3 +14,5 @@ const store = configureStore({
   },
 });
 export default store;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

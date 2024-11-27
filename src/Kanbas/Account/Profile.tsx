@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as db from "../Database/database";
+import * as client from "./client";
 import { Link, useNavigate } from "react-router-dom";
 import { setCurrentUser } from "./reducer";
 
@@ -11,17 +12,30 @@ export default function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+
   const fetchProfile = () => {
     if (!currentUser) return navigate("/Kanbas/Account/Signin");
     setProfile(currentUser);
   };
 
-  const signout = () => {
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     navigate("/Kanbas/Account/Signin");
   };
+
   useEffect(() => { fetchProfile(); }, []);
 
+ const updateProfile = async () => {
+  try {
+    console.log("Sending update for profile:", profile);
+    const updatedProfile = await client.updateUser(profile);
+    console.log("Received updated profile:", updatedProfile);
+    dispatch(setCurrentUser(updatedProfile));
+  } catch (error) {
+    console.error("Update failed:", error);
+  }
+};
 
   return (
     <div className="container mt-5">
@@ -48,6 +62,7 @@ export default function Profile() {
           <button onClick={signout} className="btn btn-danger w-100 mb-2" id="wd-signout-btn">
             Sign out
           </button>
+          <button onClick={updateProfile} className="btn btn-primary w-100 mb-2"> Update </button>
         </div>
       )}
 </div>
