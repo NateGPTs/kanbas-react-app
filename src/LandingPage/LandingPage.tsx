@@ -14,6 +14,8 @@ export default function LandingPage() {
                 <li><Link to="/Labs/*">Labs</Link></li>
                 <li><a href="https://github.com/NateGPTs/kanbas-react-app"> Repository</a></li>
                 <li><a href="https://github.com/NateGPTs/kanbas-react-app/tree/A2"> Repository, Branch A2</a></li>
+                <li><a href="https://github.com/NateGPTs/kanbas-react-app/tree/a5"> Repository, Branch A5</a></li>
+                <li><a href="https://github.com/NateGPTs/kanbas-node-server-app"> Repository, Node Server</a></li>
             </ul>
         </div>
     );
